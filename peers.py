@@ -9,23 +9,9 @@ import os
 import json
 import ipinfo
 import varp # my variable file
+import re
 
-data1 = data2 = {}
 handler = ipinfo.getHandler(varp.token)
-
-try:
-    output = os.popen(f'ssh {varp.user}@{varp.srv2} "python3 output.py"').read()
-    data1 = json.loads(output)
-except:
-    data1 = { 'd1' : 'error'}
-
-try:
-    output = os.popen(f'ssh {varp.user}@{varp.srv1} "python3 output.py"').read()
-    data2 = json.loads(output)
-except:
-    data2 = { 'e1' : 'error'}
-
-data3 = {**data1, **data2}
 
 def ip_in_json(ip_address): #Function that determines the city, contry and org if not saved in ip_file.json
     with open('ip_file.json', "r") as f:
@@ -42,6 +28,42 @@ def ip_in_json(ip_address): #Function that determines the city, contry and org i
                     f.close()
             except:
                 return 'N/A','N/A'
+
+def get_json(srv):
+    try:
+        output = os.popen(f'ssh {varp.user}@{srv} "python3 output.py"').read()
+        data = json.loads(output)
+    except:
+        data = { 'd1' : 'error'}
+    return(data)
+
+def new_json(data,ind):
+    output ={}
+    i = 0
+    for item in data:
+        minutes = 0
+        i += 1
+        for var in re.findall(r'(\d+) day', item['Last active']): #extract minutes to show only peers active in the last 30 mins.
+            minutes += int(var) * 60
+        for var in re.findall(r'(\d+) hour', item['Last active']): #extract minutes to show only peers active in the last 30 mins.
+            minutes += int(var) * 60
+        for var in re.findall(r'(\d+) minutes', item['Last active']):
+            minutes += int(var)
+        if minutes < 31:
+            color ="green"
+            icon = "mdi:lan-connect"
+        else:
+            color ="#a60b00"
+            icon = "mdi:lan-disconnect"
+        output[ind+str(i)] = {"peer": item['Peer'], "ip":  item['Public IP'], "active":  item['Last active'], "download":  item['download'], "color": color, "icon": icon}
+    return(output)
+
+
+#print(json.dumps(new_json(get_json(varp.srv2),'d'), indent=4))
+
+data1 = new_json(get_json(varp.srv2),'d')
+data2 = new_json(get_json(varp.srv1),'e')
+data3 = {**data1, **data2}
 
 #print(ip_in_json("8.8.8.8")) #for testing purposes
 

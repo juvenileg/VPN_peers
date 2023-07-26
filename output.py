@@ -32,42 +32,18 @@ match3 = re.findall('handshake:.(.*)', output1)
 match4 = re.findall('transfer:.(.*)\s*.received', output1)
 match5 = re.findall('received,.(.*)\s*.sent', output1)
 
-#current_folder = os.getcwd() ###this script needs to be in the /config folder,wherever that is mapped to
-current_folder = f'/home/{varo.user}/Drive/conf_files/wireguard_data'
-files = os.listdir(current_folder)
+files = os.listdir(varo.path)
 for file in files:
     if file.startswith('peer'):
         nfile = file[5:]
-        vpn = {'Server' : 'Windrush', 'Peer' : nfile}
-        command = f'cat {current_folder}/{file}/{file}.conf | grep Address'
+        vpn = {'Peer' : nfile}
+        command = f'cat {varo.path}/{file}/{file}.conf | grep Address'
         output = subprocess.run(command, shell=True, capture_output=True)
         output = output.stdout.decode()
         match = re.search(r'\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}', output)
-        for i in range(output1.count('endpoint')):
+        for i in range(len(match1)):
             if match.group() == match2[i]:
-                minutes = 0
-                for var in re.findall(r'(\d+) day', match3[i]): #extract minutes to show only peers active in the last 30 mins.
-                    minutes += int(var) * 60
-                for var in re.findall(r'(\d+) hour', match3[i]): #extract minutes to show only peers active in the last 30 mins.
-                    minutes += int(var) * 60
-                for var in re.findall(r'(\d+) minutes', match3[i]):
-                    minutes += int(var)
-                if minutes < 31:
-                    vpn.update({'Public IP' : match1[i],'Private IP' : match2[i],'Last active' : match3[i],'upload' : match4[i],'download' : match5[i], "color": "green", "icon": "mdi:lan-connect"})
-                    vpns.append(vpn)
-                else:
-                    vpn.update({'Public IP' : match1[i],'Private IP' : match2[i],'Last active' : match3[i],'upload' : match4[i],'download' : match5[i], "color": "#a60b00", "icon": "mdi:lan-disconnect"})
-                    vpns.append(vpn)
+                vpn.update({'Public IP' : match1[i],'Private IP' : match2[i],'Last active' : match3[i],'upload' : match4[i],'download' : match5[i]})
+                vpns.append(vpn)
 
-
-output={}
-i = 0
-for item in vpns:
-    i += 1
-    output["d"+str(i)] = {'Server' : item['Server'], "peer": item['Peer'], "ip":  item['Public IP'], "active":  item['Last active'], "download":  item['download'], "color": item['color'], "icon": item['icon']}
-
-'''
-save_file = open("output.json", "w")
-json.dump(output, save_file)
-save_file.close()'''
-print(json.dumps(output, indent=4))
+print(json.dumps(vpns, indent=4))

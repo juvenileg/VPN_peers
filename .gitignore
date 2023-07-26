@@ -1,0 +1,3 @@
+# Ignore variable files
+var*.*
+.vscode/*

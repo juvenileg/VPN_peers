@@ -22,7 +22,7 @@ try:
     addr = socket.gethostbyname(varc.domain)
     if addr == srv_ip:
         my_text = f"IP address of {varc.domain} is {addr}. It matches the expected IP address. Your server should be OK for VPN connections"
-    else:
+    elif srv_ip != '':
         my_text = f"IP address of {varc.domain} is {addr}. It does not match the expected IP {srv_ip}, RDS address might have changed and VPN is down!"
 except socket.gaierror:
     my_text = f"Could not resolve {varc.domain}, might be a problem with the script, but I can connect through Cloudflare tunnel"

@@ -63,19 +63,20 @@ def new_json(data,ind):
 
 data1 = new_json(get_json(varp.srv2),'d')
 data2 = new_json(get_json(varp.srv1),'e')
-data3 = {**data1, **data2}
+data3 = new_json(get_json(varp.srv3),'f')
+dataall = {**data1, **data2, **data3}
 
 #print(ip_in_json("8.8.8.8")) #for testing purposes
 
-for key in data3: #re-writes the json data with city and org details
-    key1= ip_in_json(data3[key]['ip'])
-    data3[key]['city'] = key1[0]
-    data3[key]['org'] = key1[1]
+for key in dataall: #re-writes the json data with city and org details
+    key1= ip_in_json(dataall[key]['ip'])
+    dataall[key]['city'] = key1[0]
+    dataall[key]['org'] = key1[1]
 
-#print(json.dumps(data3, indent=4)) #for testing purposes
+#print(json.dumps(dataall, indent=4)) #for testing purposes
 
 save_file = open("wire.json", "w")
-json.dump(data3, save_file, indent=4)
+json.dump(dataall, save_file, indent=4)
 save_file.close()
 
 # Rsync file to another server

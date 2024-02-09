@@ -48,7 +48,7 @@ def update_dns(id,new_ip_cf,domain):
         'proxied': False,
         'comment': f'Updated on {date_time_str} via automation'
     }
-    requests.put(f'{base_url}{varc.zone_identifier}/dns_records/{id}', json=data, headers=headers)
+    requests.put(f'{base_url}zones/{varc.zone_identifier}/dns_records/{id}', json=data, headers=headers)
 
 # Get tunnel status from Cloudflare
 def retrieve_tunnel(domain):

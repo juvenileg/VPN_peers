@@ -63,8 +63,9 @@ def new_json(data,ind):
 
 data1 = new_json(get_json(varp.srv2),'d')
 data2 = new_json(get_json(varp.srv1),'e')
-data3 = new_json(get_json(varp.srv3),'f')
-dataall = {**data1, **data2, **data3}
+#data3 = new_json(get_json(varp.srv3),'f')
+#dataall = {**data1, **data2, **data3}
+dataall = {**data1, **data2}
 
 #print(ip_in_json("8.8.8.8")) #for testing purposes
 
@@ -74,7 +75,6 @@ for key in dataall: #re-writes the json data with city and org details
     dataall[key]['org'] = key1[1]
 
 #print(json.dumps(dataall, indent=4)) #for testing purposes
-
 save_file = open("wire.json", "w")
 json.dump(dataall, save_file, indent=4)
 save_file.close()

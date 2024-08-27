@@ -26,11 +26,11 @@ def escape_ansi(line): #function to remove any ansi encoding
     return ansi_escape.replace('\r', '')
 output1 = escape_ansi(output1)
 
-match1 = re.findall('endpoint:.(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})', output1)
-match2 = re.findall('ips:.(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})', output1)
-match3 = re.findall('handshake:.(.*)', output1)
-match4 = re.findall('transfer:.(.*)\s*.received', output1)
-match5 = re.findall('received,.(.*)\s*.sent', output1)
+match1 = re.findall(r'endpoint:.(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})', output1)
+match2 = re.findall(r'ips:.(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})', output1)
+match3 = re.findall(r'handshake:.(.*)', output1)
+match4 = re.findall(r'transfer:.(.*)\s*.received', output1)
+match5 = re.findall(r'received,.(.*)\s*.sent', output1)
 
 files = os.listdir(varo.path)
 for file in files:

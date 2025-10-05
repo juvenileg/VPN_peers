@@ -40,22 +40,25 @@ def get_json(srv):
 def new_json(data,ind):
     output ={}
     i = 0
-    for item in data:
-        minutes = 0
-        i += 1
-        for var in re.findall(r'(\d+) day', item['Last active']): #extract minutes to show only peers active in the last 30 mins.
-            minutes += int(var) * 60
-        for var in re.findall(r'(\d+) hour', item['Last active']): #extract minutes to show only peers active in the last 30 mins.
-            minutes += int(var) * 60
-        for var in re.findall(r'(\d+) minutes', item['Last active']):
-            minutes += int(var)
-        if minutes < 31:
-            color ="green"
-            icon = "mdi:lan-connect"
-        else:
-            color ="#a60b00"
-            icon = "mdi:lan-disconnect"
-        output[ind+str(i)] = {"peer": item['Peer'], "ip":  item['Public IP'], "active":  item['Last active'], "download":  item['download'], "color": color, "icon": icon}
+    try:
+        for item in data:
+            minutes = 0
+            i += 1
+            for var in re.findall(r'(\d+) day', item['Last active']): #extract minutes to show only peers active in the last 30 mins.
+                minutes += int(var) * 60
+            for var in re.findall(r'(\d+) hour', item['Last active']): #extract minutes to show only peers active in the last 30 mins.
+                minutes += int(var) * 60
+            for var in re.findall(r'(\d+) minutes', item['Last active']):
+                minutes += int(var)
+            if minutes < 31:
+                color ="green"
+                icon = "mdi:lan-connect"
+            else:
+                color ="#a60b00"
+                icon = "mdi:lan-disconnect"
+            output[ind+str(i)] = {"peer": item['Peer'], "ip":  item['Public IP'], "active":  item['Last active'], "download":  item['download'], "color": color, "icon": icon}
+    except:
+        output ={}
     return(output)
 
 
@@ -63,9 +66,9 @@ def new_json(data,ind):
 
 data1 = new_json(get_json(varp.srv2),'d')
 data2 = new_json(get_json(varp.srv1),'e')
-#data3 = new_json(get_json(varp.srv3),'f')
-#dataall = {**data1, **data2, **data3}
-dataall = {**data1, **data2}
+data3 = new_json(get_json(varp.srv3),'f')
+dataall = {**data1, **data2, **data3}
+#dataall = {**data1, **data2}
 
 #print(ip_in_json("8.8.8.8")) #for testing purposes
 
